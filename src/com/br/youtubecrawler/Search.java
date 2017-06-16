@@ -16,8 +16,10 @@ public class Search {
 	private List<Video> pagesToVisit;
 	private SearchAPI api;
 	private CommentAPI commentHandling;
+	private Long amount;
 
-	public Search(String search) {
+	public Search(String search, Integer amount) {
+		this.amount = Long.valueOf(amount.toString());
 		this.search = search;
 		pagesToVisit = new ArrayList<Video>();
 		api = new SearchAPI();
@@ -27,11 +29,10 @@ public class Search {
 	public List<Video> doSearch() {
 		List<Video> videos = null;
 		try {
-			videos = api.doSearch(search, Long.valueOf("1"));
+			videos = api.doSearch(search, amount);
 			System.out.print("Gathering further info");
 			videos.forEach(video -> completeObject(video));
 			System.out.println("\nDone");
-			// videos.forEach(video -> {
 			// System.out.println("Video " + video.getTitle() + "\tPossui: " +
 			// video.getViews() + ", "
 			// + video.getLikes() + " likes, " + video.getDislikes() + "

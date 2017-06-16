@@ -10,7 +10,7 @@ public class main {
 	private static List<Video> pagesToVisit = new ArrayList<Video>();
 
 	public static void main(String[] args) {
-		Search search = new Search("Depois das Onze");
+		Search search = new Search("Depois das Onze", 2);
 		List<Video> videos = search.doSearch();
 
 		if (videos != null && !videos.isEmpty()) {
