@@ -10,6 +10,9 @@ public class main {
 	private static List<Video> pagesToVisit = new ArrayList<Video>();
 
 	public static void main(String[] args) {
+		List<String> videoList = new ArrayList<String>();
+		List<String> accountsList = new ArrayList<String>();
+
 		Search search = new Search("Depois das Onze", 2);
 		List<Video> videos = search.doSearch();
 
@@ -20,13 +23,17 @@ public class main {
 					video.getComments().forEach(comment -> {
 						comment.getAutor().setLikedVideos(
 								LikedVideos.getLikedVideos(mountLikedURL(comment.getAutor().getChannel())));
-						comment.getAutor().setLikedVideos(FollowedAccounts
+						videoList.addAll(comment.getAutor().getLikedVideos());
+						comment.getAutor().setFollowedAccounts(FollowedAccounts
 								.getFollowedAccounts(mountFollowedURL(comment.getAutor().getChannel())));
+						accountsList.addAll(comment.getAutor().getFollowedAccounts());
 
 					});
 				}
 			});
 		}
+		
+		//accountsList e videoList contem todos os video e contas indicadas
 	}
 
 	private static String mountLikedURL(String channel) {
