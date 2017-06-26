@@ -1,17 +1,20 @@
 package com.br.youtubecrawler;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.br.crawler.domain.Comment;
 import com.br.crawler.domain.Video;
+import com.github.axet.vget.VGet;
 
 public class main {
 
@@ -49,17 +52,13 @@ public class main {
 	public static void createArquivosGerais(String search, List<String> videoList, List<String> accountsList) {
 		try {
 			Writer writer = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream("result/"+search + "-Video.txt"), "utf-8"));
+					new OutputStreamWriter(new FileOutputStream("result/" + search + "-Video.txt"), "utf-8"));
 			for (String s : videoList) {
 				writer.write(s + "\n");
-//				VGet v = new VGet(new URL(s), new File("result/"));
-//				System.out.println("Init Download");
-//	            v.download();
-//	            System.out.println("Finish Download");
 			}
 			writer.close();
 			writer = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream("result/"+search + "-Accounts.txt"), "utf-8"));
+					new OutputStreamWriter(new FileOutputStream("result/" + search + "-Accounts.txt"), "utf-8"));
 			for (String s : accountsList) {
 				writer.write(s);
 			}
@@ -79,17 +78,18 @@ public class main {
 		}
 
 	}
-
 	public static void createFiles(List<Video> videos) {
-		Writer writer = null, writer2 = null;
+		Writer writer = null, writer2 = null, comments= null;
 
 		try {
 			for (Video video : videos) {
-				writer = new BufferedWriter(
-						new OutputStreamWriter(new FileOutputStream("result/"+video.getTitle() + "-Videos.txt"), "utf-8"));
+				writer = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream("result/" + video.getTitle() + "-Videos.txt"), "utf-8"));
 
-				writer2 = new BufferedWriter(
-						new OutputStreamWriter(new FileOutputStream("result/"+video.getTitle() + "-Accounts.txt"), "utf-8"));
+				writer2 = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream("result/" + video.getTitle() + "-Accounts.txt"), "utf-8"));
+				comments = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream("result/" + video.getTitle() + "-Comments.txt"), "utf-8"));
 				if (video.getComments() != null) {
 					for (Comment comment : video.getComments()) {
 						for (String s : comment.getAutor().getFollowedAccounts()) {
@@ -99,9 +99,13 @@ public class main {
 						for (String s : comment.getAutor().getLikedVideos()) {
 							writer.write(s + "\n");
 						}
+						
+						comments.write(comment.getComment() + "\n");
+						comments.write("\t"+comment.getAutor().getAuthor() + "\n----------------------------\n");
 					}
 				}
 				writer.close();
+				comments.close();
 				writer2.close();
 			}
 		} catch (FileNotFoundException e) {
